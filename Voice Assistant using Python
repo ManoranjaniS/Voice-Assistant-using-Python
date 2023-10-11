@@ -1,0 +1,66 @@
+#pip install PyAudio
+import pyttsx3 #pip install pyttsx3==2.7 ####pip install pywin32     #requires PyAudio
+import speech_recognition as sr #pip install speechRecognition
+import webbrowser
+import datetime
+import playsound as ps
+
+engine = pyttsx3.init('sapi5')   #sapi is engine: espeak,nsss. This engine will initiate how machine is able to produce voices
+voices = engine.getProperty('voices')   #setting properties as voices
+engine.setProperty('voice', voices[0].id)   #selecting the type of voice. 0 Male voice, 1 female voice
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+def wishMe():
+    hour = int(datetime.datetime.now().hour)
+    if hour>=0 and hour<11:
+        speak("Good Morning!")
+    elif hour>=12 and hour<14:
+        speak("Good Afternoon!")
+    else:
+        speak("Good Evening!")
+
+    speak("I am your personal assitant Mam, I had designed by tha team Hackaholicks. Please tell me how may I help you")
+
+def takeCommand():
+    #It takes microphone input from the user and returns string output
+
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        #r.pause_threshold = 1
+        audio=r.record(source, duration = 4)
+        print(audio)
+        #audio = r.listen(source)
+
+    try:
+        print("Recognizing...")
+        query = r.recognize_google(audio, language='en-in')
+        print("User said: {0}\n".format(query))
+
+    except Exception:
+        # print(e)
+        print("Say that again please...")
+        return "None"
+    return query
+
+
+if __name__ == "__main__":
+    wishMe()
+    while True:
+    # if 1:
+        query = takeCommand().lower() #takes thecoomand from user and convert it in string and pass in querry variable
+        if 'open youtube' in query:
+            webbrowser.open("youtube.com")
+
+        elif 'open google' in query:
+            webbrowser.open("google.com")
+        elif 'open my website' in query:
+            webbrowser.open("https://www.vsbec.com")
+        elif 'exit' in query:
+            for i in range(1):
+                speak("thanks for Hackholicks")
+                break
+
